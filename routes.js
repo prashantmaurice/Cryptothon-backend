@@ -27,6 +27,7 @@ module.exports = function (app) {
 
   // redirect event routes to event module index.js file
   app.use("/api/restaurants", require("./api/restaurants"));
+  app.use("/cryptothon/api/users", require("./api/users"));
 
   // All other routes should redirect to 404
   app.all("*", function (req, res) {

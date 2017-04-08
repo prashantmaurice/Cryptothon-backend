@@ -14,7 +14,7 @@ var path = require("path"),
       // Root path of server
       root: path.normalize(__dirname + "/.."),
 
-      baseUrl: "http://localhost:5000",
+      baseUrl: "http://localhost:8888",
       downloadDir: __dirname + "/tmp"
     },
 
@@ -43,7 +43,7 @@ var path = require("path"),
     development: {
       env: "development",
 
-      port: 5000,
+      port: 8888,
       mongo: {
         uri: "mongodb://localhost/cryptothon",
         options: {
