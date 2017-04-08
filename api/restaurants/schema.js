@@ -7,11 +7,16 @@ var mongoose = require("mongoose"),
 restaurantSchema = new Schema({
   restaurantName: {type: String, "default": null},
   location: {
-    type: "Point",
-    coordinates: []
+    type: {
+      type: String,
+      required: true,
+      "enum": ["Point", "LineString", "Polygon"],
+      "default": "Point"
+    },
+    coordinates: [ Number ]
   },
   description: {type: String, "default": null},
   timestamp: {type: Number, "default": Date.now}
-}, {collection: "Events"});
+}, {collection: "Restaurants"});
 
-module.exports = mongoose.model("Event", restaurantSchema);
+module.exports = mongoose.model("Restaurants", restaurantSchema);
