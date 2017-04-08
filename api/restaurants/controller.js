@@ -3,35 +3,60 @@ var model = require("./model"),
   logMsg = require("../utils/logger-message"),
   Response = require("../utils/Response");
 
-exports.getRestaurants = function (req, res) {
-  "use strict";
-  try {
-    model.getRestaurants(req.query, function (err, restaurants) {
-      if (err || !restaurants) {
-        logger.error(err, {
-          filePath: "api/restaurants/controller",
-          functionName: "getRestaurants",
-          msg: logMsg.getMessage(req, err)
-        });
-        res.json(Response.r(false, err, null));
-      } else {
-        logger.info({
-          filePath: "api/restaurants/controller",
-          functionName: "getRestaurants",
-          msg: logMsg.getMessage(req, "success")
-        });
-        res.json(Response.r(true, null, restaurants));
-      }
-    });
-  } catch (e) {
-    logger.error(e, {
-      filePath: "api/restaurants/controller",
-      functionName: "getRestaurants",
-      msg: logMsg.getMessage(req, e)
-    });
+var restaurents = [{
+        name : "Fresh Menu",
+        id : "B1234",
+        lat : 12.9321802,
+        lng : 77.6129255,
+        coupons : [{
+            claimed : false,
+            id : "12",
+          name : "CheckIn offer",
+          type : "checkin"
+        }]
+    },{
+        name : "Empire Restaurant",
+        id : "B1235",
+        lat : 12.9297228,
+        lng : 77.6145456,
+        coupons : [{
+            id : "13",
+            claimed : false,
+            name : "CheckIn offer",
+            type : "checkin"
+        }]
+    },{
+    name : "KFC",
+    id : "B1236",
+    lat : 12.9321802,
+    lng : 77.6129255,
 
-    res.json(Response.r(false, {msg: e.toString()}, null));
-  }
+    coupons : [{
+        id : "14",
+        claimed : true,
+        name : "CheckIn offer",
+        type : "checkin"
+    }]
+}];
+
+
+
+exports.getRestaurants = function (req, res) {
+    res.json(Response.r(true, null,{restaurents : restaurents} ));
+};
+
+exports.getRestaurant = function (req, res) {
+    var id = req.params.id
+    res.json(Response.r(true, null,{restaurent : restaurents[2]} ));
+};
+
+exports.claim = function (req, res) {
+    var id = req.params.id
+    res.json(Response.r(true, null,{claimed : true} ));
+};
+
+exports.testUnocoin = function (req, res) {
+    res.json(Response.r(true, null, { working : true}));
 };
 
 
