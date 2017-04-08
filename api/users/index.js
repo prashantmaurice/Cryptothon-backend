@@ -85,8 +85,7 @@ function getPrices(token, callback) {
 		callback(null, JSON.parse(body));
 	});
 }
-
-get events
+// get events
 router.get("/", (req, res) => {
 	getClientToken(function(error, clientToken){
 		if (error) throw new Error(error);
@@ -157,7 +156,7 @@ router.get("/getUserDetails/", (req, res) => {
 
 			var options = { method: 'POST',
 				url: 'https://sandbox.unocoin.co/api/v1/wallet/profiledetails',
-				headers: 
+				headers:
 				{'authorization': 'Bearer ' + userToken,
 				 'content-type': 'application/json' },
 				json: true };
