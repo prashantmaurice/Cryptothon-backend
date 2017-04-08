@@ -65,6 +65,7 @@ exports.register = function (req, callback) {
     insertObject.restaurantName = req.restaurantName;
     insertObject.description = req.description;
     insertObject.location = {};
+    insertObject.coupons = req.coupons;
     if (req.location.type) {
       insertObject.location.type = req.location.type;
     }

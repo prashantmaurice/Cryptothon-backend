@@ -7,12 +7,12 @@ var express = require("express"),
 // get events
 router.get("/", controller.getRestaurants);
 router.get("/id", controller.getRestaurant);
-router.get("/claim", controller.claim);
 router.get("/test", controller.testUnocoin);
 
 
-
 // register events
+router.post("/claim", controller.claim);
 router.post("/register", controller.register);
+router.put("/register", controller.register);
 
 module.exports = router;

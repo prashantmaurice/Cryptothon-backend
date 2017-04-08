@@ -18,6 +18,12 @@ restaurantSchema = new Schema({
       "default": [0, 0]
     }
   },
+  coupons: [
+    {
+      label: {type: String, "default": null},
+      claimed: {type: Boolean, "default": false}
+    }
+  ],
   description: {type: String, "default": null},
   timestamp: {type: Number, "default": Date.now}
 }, {collection: "Restaurants"});
