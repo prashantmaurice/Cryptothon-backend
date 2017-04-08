@@ -9,6 +9,20 @@ var restaurants = [
       id : "B1234",
       lat : 12.9321802,
       lng : 77.6129255,
+      menu: [
+        {
+          name: "paneer slider",
+          val: 150
+        },
+        {
+          name: "exotic fish bowl",
+          val: 250
+        },
+        {
+          name: "The maiden cake",
+          val: 100
+        }
+      ],
       coupons : [{
           claimed : false,
           id : "A12",
@@ -37,10 +51,24 @@ var restaurants = [
         }]
     },
     {
-        name : "Empire Restaurant",
+        name : "Paradise",
         id : "B1235",
-        lat : 12.9297228,
-        lng : 77.6145456,
+        lat : 12.9341874,
+        lng : 77.6299719,
+        menu: [
+          {
+            name: "paneer butter masala",
+            val: 209
+          },
+          {
+            name: "chicken biyani",
+            val: 245
+          },
+          {
+            name: "mutton biyani",
+            val: 295
+          }
+        ],
         coupons : [{
             id : "A13",
             claimed : false,
@@ -56,11 +84,11 @@ var restaurants = [
             type: "feedback",
             questions: [
               {
-                question: "How do you find the burgers here?",
+                question: "How do you find the chicken kebab here?",
                 isAnswered: false
               },
               {
-                question: "How do you find the pizza here?",
+                question: "How do you find the mutton biryani here?",
                 isAnswered: false
               }
             ],
@@ -71,8 +99,22 @@ var restaurants = [
     {
       name : "KFC",
       id : "B1236",
-      lat : 12.9321802,
-      lng : 77.6129255,
+      lat : 12.9375371,
+      lng : 77.6269363,
+      menu: [
+        {
+          name: "Fiery Grilled chicken bucket",
+          val: 450
+        },
+        {
+          name: "crusher",
+          val: 100
+        },
+        {
+          name: "zinga chicken meal",
+          val: 200
+        }
+      ],
 
       coupons : [{
           id : "A14",
