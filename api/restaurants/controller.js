@@ -253,6 +253,7 @@ exports.claim = function (req, res) {
         if (restaurants[i].id === id) {
           if (!restaurants[i].coupons[0].claimed) {
             restaurants[i].coupons[0].claimed = true;
+            val = restaurants[i].coupons[0].val;
             res.json(Response.r(true, null,{claimed : true} ));
             break;
           } else {
