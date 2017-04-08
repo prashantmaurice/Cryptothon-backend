@@ -6,40 +6,39 @@ exports.getRestaurants = function (queryParams, callback) {
   var q = {};
 
   try {
-    if (queryParams.location) {
-      q.location = queryParams.location;
+    if (queryParams.lat && queryParams.long) {
+      q.coordinates = [];
+      q.coordinates.push(parseFloat(queryParams.lat));
+      q.coordinates.push(parseFloat(queryParams.long));
     }
 
-    Restaurant.find(q)
-      .sort({"timestamp.created_at": -1})
-      .exec(function (err, restaurant) {
-        if (err || !restaurant) {
-          logger.error(err, {
-            filePath: "api/restaurants/service",
-            functionName: "getRestaurants",
-            msg: err
-          });
-          callback({msg: "Restaurants not found"}, null);
-        } else {
-          Restaurant.count(q, function (err, restaurantCount) {
-            if (err) {
-              logger.error(err, {
-                filePath: "api/clients/service",
-                functionName: "getRestaurants",
-                msg: err
-              });
-              callback({msg: "db err occurred. Please try again"}, null);
-            } else {
-              logger.info({
-                filePath: "api/clients/service",
-                functionName: "getRestaurants",
-                msg: "success"
-              });
-              callback(null, {totalCount: restaurantCount, restaurant: restaurant});
-            }
-          });
+    console.log(q.coordinates);
+
+    Restaurant.aggregate([
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: q.coordinates },
+          distanceField: "dist.calculated",
+          maxDistance: 2,
+          query: { type: "public" },
+          num: 5,
+          spherical: true
         }
-      });
+      }
+    ], function (err, restaurants) {
+      console.log(err, restaurants);
+      callback(null, {restaurants: restaurants});
+    });
+
+    // Restaurant.find({
+    //   loc: {
+    //     $geoWithin: {
+    //       $centerSphere: [q.coordinates, 100 / 6378.1]
+    //     }
+    //   }
+    // }).exec(function (err, restaurants) {
+    //   callback(null, {restaurants: restaurants});
+    // });
   } catch (e) {
     logger.error(e, {
       filePath: "api/restaurants/service",
