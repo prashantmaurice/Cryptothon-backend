@@ -140,7 +140,7 @@ router.get("/getAllTransactions/", (req, res) => {
 			request(options, function (error, response, body) {
 				if (error) throw new Error(error);
 
-				res.send(body.transactions);
+				res.send({'data': body.transactions, 'success': true, 'error': null});
 			});
 
 		});
