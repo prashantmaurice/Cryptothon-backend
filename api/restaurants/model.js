@@ -12,33 +12,20 @@ exports.getRestaurants = function (queryParams, callback) {
       q.coordinates.push(parseFloat(queryParams.long));
     }
 
-    console.log(q.coordinates);
-
-    Restaurant.aggregate([
-      {
-        $geoNear: {
-          near: { type: "Point", coordinates: q.coordinates },
-          distanceField: "dist.calculated",
-          maxDistance: 2,
-          query: { type: "public" },
-          num: 5,
-          spherical: true
+    Restaurant.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [queryParams.lat, queryParams.long]
+          },
+          $maxDistance: 10
         }
       }
-    ], function (err, restaurants) {
+    }).exec(function (err, restaurants) {
       console.log(err, restaurants);
       callback(null, {restaurants: restaurants});
     });
-
-    // Restaurant.find({
-    //   loc: {
-    //     $geoWithin: {
-    //       $centerSphere: [q.coordinates, 100 / 6378.1]
-    //     }
-    //   }
-    // }).exec(function (err, restaurants) {
-    //   callback(null, {restaurants: restaurants});
-    // });
   } catch (e) {
     logger.error(e, {
       filePath: "api/restaurants/service",

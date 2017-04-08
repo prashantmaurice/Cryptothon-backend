@@ -13,10 +13,14 @@ restaurantSchema = new Schema({
       "enum": ["Point", "LineString", "Polygon"],
       "default": "Point"
     },
-    coordinates: [ Number ]
+    coordinates: {
+      type: [ Number ],
+      "default": [0, 0]
+    }
   },
   description: {type: String, "default": null},
   timestamp: {type: Number, "default": Date.now}
 }, {collection: "Restaurants"});
 
+restaurantSchema.index({location: "2dsphere"});
 module.exports = mongoose.model("Restaurants", restaurantSchema);
