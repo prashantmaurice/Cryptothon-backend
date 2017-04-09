@@ -9,6 +9,7 @@ router.get("/", controller.getRestaurants);
 router.get("/id", controller.getRestaurant);
 router.get("/test", controller.testUnocoin);
 router.get("/clients", controller.getClients);
+router.get("/claimedClients", controller.claimedClients);
 router.post("/clients", controller.postClients);
 // router.put("/clients", controller.updateClients);
 

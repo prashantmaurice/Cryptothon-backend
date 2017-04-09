@@ -146,7 +146,21 @@ var restaurants = [
         }]
     }
   ],
-  clients = [];
+  clients = [],
+  claimedClients = [];
+
+  exports.claimedClients = function (req, res) {
+    var restaurantId = req.query.restaurantId,
+      i, finalArray = [];
+
+    for (i = 0; i < clients.length; i++) {
+      if (claimedClients[i].restaurantId === restaurantId) {
+        finalArray.push(claimedClients[i]);
+      }
+    }
+
+    res.json(Response.r(true, null,{clients : finalArray} ));
+  };
 
   exports.getClients = function (req, res) {
     var restaurantId = req.query.restaurantId,
@@ -308,7 +322,12 @@ exports.claim = function (req, res) {
       for (i = 0; i < restaurants.length; i++) {
         if (restaurants[i].id === id) {
           if (!restaurants[i].coupons[0].claimed) {
-            // restaurants[i].coupons[0].claimed = true;
+            claimedClients.push({
+              clientId: req.body.clientId,
+              clientName: req.body.clientName,
+              restaurantId: id
+            });
+            restaurants[i].coupons[0].claimed = true;
             val = restaurants[i].coupons[0].val;
             Users.buyBitCoin(val, function(error, data) {
               console.log('yo', error, data);
