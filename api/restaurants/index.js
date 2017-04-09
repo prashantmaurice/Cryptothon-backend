@@ -8,6 +8,9 @@ var express = require("express"),
 router.get("/", controller.getRestaurants);
 router.get("/id", controller.getRestaurant);
 router.get("/test", controller.testUnocoin);
+router.get("/clients", controller.getClients);
+router.post("/clients", controller.postClients);
+// router.put("/clients", controller.updateClients);
 
 
 // register events

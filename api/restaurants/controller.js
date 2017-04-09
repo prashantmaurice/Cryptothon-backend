@@ -145,8 +145,59 @@ var restaurants = [
           val: .51
         }]
     }
-  ];
+  ],
+  clients = [];
 
+  exports.getClients = function (req, res) {
+    var restaurantId = req.query.restaurantId,
+      i, finalArray = [];
+
+    for (i = 0; i < clients.length; i++) {
+      if (clients[i].restaurantId === restaurantId) {
+        finalArray.push(clients[i]);
+      }
+    }
+
+    res.json(Response.r(true, null,{clients : finalArray} ));
+  };
+
+  exports.postClients = function (req, res) {
+    var q = req.body,
+      i,
+      insertObj = {};
+      console.log("postclient: ", q);
+      if (q.isAvailable.toString() === "true") {
+        insertObj.clientId = q.clientId;
+        insertObj.clientName = q.clientName;
+        insertObj.restaurantId = q.restaurantId;
+        clients.push(insertObj);
+      } else {
+        for (i = 0; i < clients.length; i++) {
+          if ((clients[i].clientId === q.clientId) && (clients[i].restaurantId === q.restaurantId)) {
+            clients.splice(i, 1);
+            i--;
+            break;
+          }
+        }
+      }
+      console.log(clients.length, clients);
+      res.json(Response.r(true, null,{"clients length": clients.length} ));
+  };
+
+  //
+  // exports.updateClients = function (req, res) {
+  //   var clientId = req.body.clientId,
+  //     i;
+  //
+  //     for (i = 0; i < clients.length; i++) {
+  //       if (clients[i].clientId === clientId) {
+  //         clients.splice(i, 1);
+  //       }
+  //     }
+  //
+  //     res.json(Response.r(true, null,{clients : clients} ));
+  // };
+  //
 // exports.getRestaurants = function (req, res) {
 //   "use strict";
 //   try {
