@@ -139,7 +139,35 @@ router.get("/getAllTransactions/", (req, res) => {
 			request(options, function (error, response, body) {
 				if (error) throw new Error(error);
 
+				console.log('body', body);
 				res.send({'data': body.transactions, 'success': true, 'error': null});
+			});
+
+		});
+
+	});
+});
+
+router.get("/sendBitCoins/", (req, res) => {
+	getClientToken(function(error, clientToken){
+		if (error) throw new Error(error);
+
+		getUserToken(clientToken, function(error, userToken) {
+			if (error) throw new Error(error);
+
+			var options = { method: 'POST',
+				url: 'https://sandbox.unocoin.co/api/v1/wallet/sendingbtc',
+				headers:
+				{'authorization': 'Bearer ' + userToken,
+				 'content-type': 'application/json' },
+				 body: { to_address: 'raj.prudhvi5@gmail.com', "btcamount": "0.0023"},
+				json: true };
+
+			request(options, function (error, response, body) {
+				if (error) throw new Error(error);
+
+				console.log('data', body)
+				res.send({'data': body, 'success': true, 'error': null});
 			});
 
 		});
@@ -172,11 +200,11 @@ router.get("/getUserDetails/", (req, res) => {
 	});
 });
 
-router.post("/buyBitCoin/", (req, res) => {
-	var bitCoinValue = req.body.bitCoinValue;
-	if (!bitCoinValue) {
-		res.status(601).send('bitCoinValue missing in the params');
-	}
+router.buyBitCoin = function(val, callback) {
+	var bitCoinValue = val;
+
+	bitCoinValue = parseFloat(bitCoinValue);
+	console.log('val', bitCoinValue);
 
 	getClientToken(function(error, clientToken){
 		if (error) throw new Error(error);
@@ -208,13 +236,33 @@ router.post("/buyBitCoin/", (req, res) => {
 
 				request(options, function (error, response, body) {
 					if (error) throw new Error(error);
-					res.send(body);
+
+					body = JSON.parse(body);
+					if(body.status_code != 200) {
+						console.log("here");
+						return callback("error", body);
+					}
+
+					var transOpt = { method: 'POST',
+						url: 'https://sandbox.unocoin.co/api/v1/wallet/alltransaction',
+						headers:
+						{'authorization': 'Bearer ' + userToken,
+						 'content-type': 'application/json' },
+						json: true };
+
+					request(transOpt, function (error, response, body) {
+						if (error) throw new Error(error);
+
+							callback(null, {'data': body.transactions[0], 'success': true, 'error': null});
+						
+					});
+
 				});
 
 			})
 
 		});
 	});
-});
+};
 
 module.exports = router;

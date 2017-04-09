@@ -43,7 +43,7 @@ var path = require("path"),
     development: {
       env: "development",
 
-      port: 5000,
+      port: 8888,
       mongo: {
         uri: "mongodb://localhost/cryptothon",
         options: {

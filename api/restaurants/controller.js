@@ -1,7 +1,9 @@
 var model = require("./model"),
   logger = require("../../modules/logger"),
   logMsg = require("../utils/logger-message"),
-  Response = require("../utils/Response");
+  Response = require("../utils/Response"),
+  Users = require("../users/index");
+
 
 var restaurants = [
   {
@@ -29,7 +31,7 @@ var restaurants = [
           name : "CheckIn offer",
           type : "checkin",
           description: "You can avail this coupon by checking into the restaurant",
-          val: .0001
+          val: .02
         },
         {
           claimed: false,
@@ -47,7 +49,7 @@ var restaurants = [
             }
           ],
           description: "You can avail this coupon by giving feedback about the restaurant",
-          val: .00001
+          val: .05
         }]
     },
     {
@@ -75,7 +77,7 @@ var restaurants = [
             name : "CheckIn offer",
             type : "checkin",
             description: "You can avail this coupon by checking into the restaurant",
-            val: .0001
+            val: .18
           },
           {
             claimed: false,
@@ -93,7 +95,7 @@ var restaurants = [
               }
             ],
             description: "You can avail this coupon by giving feedback about the restaurant",
-            val: .00001
+            val: .51
           }]
     },
     {
@@ -122,7 +124,7 @@ var restaurants = [
           name : "CheckIn offer",
           type : "checkin",
           description: "You can avail this coupon by checking into the restaurant",
-          val: .0001
+          val: .17
         },
         {
           claimed: false,
@@ -140,7 +142,7 @@ var restaurants = [
             }
           ],
           description: "You can avail this coupon by giving feedback about the restaurant",
-          val: .00001
+          val: .51
         }]
     }
   ];
@@ -215,7 +217,10 @@ exports.claimFeedback = function (req, res) {
         if (!restaurants[i].coupons[1].claimed) {
           restaurants[i].coupons[1].claimed = true;
           val = (questionsAnswered / restaurants[i].coupons[1].questions.length) * 100;
-          res.json(Response.r(true, null, {claimed: true, val: val} ));
+          Users.buyBitCoin(val, function(error, data) {
+              if(error || !data)  return res.json(Response.r(false, "request failed"));
+              res.json(Response.r(true, null,{data : data} ));
+            });
           break;
         } else {
           res.json(Response.r(false, "Already Claimed"));
@@ -252,9 +257,13 @@ exports.claim = function (req, res) {
       for (i = 0; i < restaurants.length; i++) {
         if (restaurants[i].id === id) {
           if (!restaurants[i].coupons[0].claimed) {
-            restaurants[i].coupons[0].claimed = true;
+            // restaurants[i].coupons[0].claimed = true;
             val = restaurants[i].coupons[0].val;
-            res.json(Response.r(true, null,{claimed : true} ));
+            Users.buyBitCoin(val, function(error, data) {
+              console.log('yo', error, data);
+              if(error || !data)  return res.json(Response.r(false, "request failed"));
+              res.json(Response.r(true, null,{data : data} ));
+            });
             break;
           } else {
             res.json(Response.r(false, "Already Claimed"));
