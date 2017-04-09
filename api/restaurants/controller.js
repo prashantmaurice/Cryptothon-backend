@@ -152,8 +152,8 @@ var restaurants = [
   exports.claimedClients = function (req, res) {
     var restaurantId = req.query.restaurantId,
       i, finalArray = [];
-
-    for (i = 0; i < clients.length; i++) {
+      // console.log("resId", restaurantId);
+    for (i = 0; i < claimedClients.length; i++) {
       if (claimedClients[i].restaurantId === restaurantId) {
         finalArray.push(claimedClients[i]);
       }
@@ -178,13 +178,21 @@ var restaurants = [
   exports.postClients = function (req, res) {
     var q = req.body,
       i,
-      insertObj = {};
+      insertObj = {},
+      isAdded = false;
       console.log("postclient: ", q);
       if (q.isAvailable.toString() === "true") {
         insertObj.clientId = q.clientId;
         insertObj.clientName = q.clientName;
         insertObj.restaurantId = q.restaurantId;
-        clients.push(insertObj);
+        for (i = 0; i < clients.length; i++) {
+          if (clients[i].clientId === q.clientId) {
+            isAdded = true;
+          }
+        }
+        if (!isAdded) {
+          clients.push(insertObj);
+        }
       } else {
         for (i = 0; i < clients.length; i++) {
           if ((clients[i].clientId === q.clientId) && (clients[i].restaurantId === q.restaurantId)) {
@@ -313,7 +321,9 @@ exports.getRestaurant = function (req, res) {
 };
 
 exports.claim = function (req, res) {
-    var id = req.body.id;
+    var id = req.body.id,
+      i,
+      isAdded = false;
 
     if (!id) {
       res.json(Response.r(false, "id needs to be present"));
@@ -321,17 +331,26 @@ exports.claim = function (req, res) {
     else {
       for (i = 0; i < restaurants.length; i++) {
         if (restaurants[i].id === id) {
+          console.log("claim val", restaurants[i].coupons[0].claimed);
           if (!restaurants[i].coupons[0].claimed) {
-            claimedClients.push({
-              clientId: req.body.clientId,
-              clientName: req.body.clientName,
-              restaurantId: id
-            });
-            restaurants[i].coupons[0].claimed = true;
+            for (i = 0; i < claimedClients.length; i++) {
+              if (claimedClients.clientId === req.body.clientId) {
+                isAdded = true;
+              }
+            }
+            if (!isAdded) {
+              claimedClients.push({
+                clientId: req.body.clientId,
+                clientName: req.body.clientName,
+                restaurantId: id
+              });
+            }
             val = restaurants[i].coupons[0].val;
             Users.buyBitCoin(val, function(error, data) {
               console.log('yo', error, data);
+              console.log("trigger claim");
               if(error || !data)  return res.json(Response.r(false, "request failed"));
+              restaurants[i].coupons[0].claimed = true;
               res.json(Response.r(true, null,{data : data} ));
             });
             break;
